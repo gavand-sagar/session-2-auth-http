@@ -79,3 +79,9 @@ code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-size: 13p
   .two-cols { flex-direction: column; gap: 0; }
   .header { gap: 10px; }
 }
+
+label.inline { display: flex; align-items: center; gap: 6px; }
+label.inline input { display: inline; width: auto; margin: 0; }
+.menu-wrap { position: relative; display: inline-block; }
+.menu { position: absolute; top: 100%; left: 0; z-index: 5; background: #fff; border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 4px 12px #0002; display: flex; flex-direction: column; min-width: 120px; }
+.menu span { padding: 6px 12px; }

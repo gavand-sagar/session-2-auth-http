@@ -188,7 +188,19 @@ export class LowStockDirective {
 1. Open the login page. The cursor is already in the email field.
 2. Products: Mouse (4) and RxJS Handbook (2) are red. Hover over them for the tooltip. The table no longer has its own `p.stock < 5` check.
 3. Click Logout. It asks first.
-4. Open the **Directives** page: built-in `[class.x]`, `[style.x]`, `ngClass`, `ngStyle`, and the 3 directives with live controls.
+4. Open the **Directives** page: built-in `[class.x]`, `[style.x]`, `ngClass`, `ngStyle`, the 3 directives above, and 7 more small ones you can try.
+
+**More small directives** (in `shared/directives/`, each about 15 lines, all on the Directives page):
+
+| Directive | What it does | How it works |
+|-----------|--------------|--------------|
+| `[appShowPassword]` | show / hide a password (used on login) | `host: { '[type]': ... }` |
+| `appDigitsOnly` | numbers only in an input | blocks other keys in `(keydown)` and `(paste)` |
+| `appTrim` | removes spaces at both ends on blur (used on login email) | `inject(NgControl)` to update the form value |
+| `[appCopy]` | copies a text on click | `navigator.clipboard`, then an `output()` |
+| `(appClickOutside)` | tells you when the user clicks outside | `host: { '(document:click)': ... }` |
+| `appImgFallback` | default picture when an image fails | `(error)` on the `img` |
+| `appSingleClick` | ignores double clicks for 1 second | a simple lock flag |
 
 **Folder rule** (same as pipes): generic directives go in `shared/directives/`, and a directive that knows a business rule stays in its feature (`appLowStock` is in `features/products/directives/`).
 
@@ -221,7 +233,7 @@ In the same app:
 
 **Done when:** the login page opens with the cursor in the email field, low stock is red in Products, and Logout asks before logging out.
 
-**If you finish early:** write an `appHighlightOnHover` directive that changes the background of a table row while the mouse is over it (`(mouseenter)` and `(mouseleave)` in `host`).
+**If you finish early:** pick two from the "More small directives" table and write them yourself without looking at the code. `appDigitsOnly` and `appSingleClick` are the easiest to start with.
 
 ---
 

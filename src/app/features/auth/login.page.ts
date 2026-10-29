@@ -6,26 +6,31 @@ import { AuthService } from '../../core/auth/auth.service';
 import { errorMessage } from '../../core/errors/error-message';
 import { FieldError } from '../../shared/ui/field-error';
 import { AutofocusDirective } from '../../shared/directives/autofocus.directive';
+import { ShowPasswordDirective } from '../../shared/directives/show-password.directive';
+import { TrimDirective } from '../../shared/directives/trim.directive';
 
 @Component({
   selector: 'app-login-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FieldError, AutofocusDirective],
+  imports: [ReactiveFormsModule, FieldError, AutofocusDirective, ShowPasswordDirective, TrimDirective],
   template: `
     <div class="login-card">
       <h1>{{ appName }}</h1>
       <p class="muted">Demo login: admin&#64;shop.test / admin123</p>
 
       <form [formGroup]="form" (ngSubmit)="submit()">
-        <label>Email <input type="email" formControlName="email" autocomplete="username" appAutofocus /></label>
+        <label>Email 
+          <input appAutofocus appTrim type="email" formControlName="email" autocomplete="username"  /></label>
         <app-field-error [control]="form.controls.email" />
 
-        <label>Password <input type="password" formControlName="password" autocomplete="current-password" /></label>
+        <label>Password <input type="password" [appShowPassword]="showPassword()" formControlName="password" autocomplete="current-password" /></label>
+        <label class="inline"><input type="checkbox" (change)="showPassword.set(!showPassword())" /> Show password</label>
         <app-field-error [control]="form.controls.password" />
 
         @if (error()) {
           <p class="error-text">{{ error() }}</p>
         }
+
         <button class="primary" type="submit" [disabled]="submitting()">
           {{ submitting() ? 'Signing in...' : 'Sign in' }}
         </button>
@@ -43,6 +48,7 @@ export default class LoginPage {
 
   submitting = signal(false);
   error = signal('');
+  showPassword = signal(false);
 
   form = inject(NonNullableFormBuilder).group({
     email: ['', [Validators.required, Validators.email]],

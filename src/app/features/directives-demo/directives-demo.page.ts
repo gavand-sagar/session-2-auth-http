@@ -4,13 +4,24 @@ import { PageHeader } from '../../shared/ui/page-header';
 import { AutofocusDirective } from '../../shared/directives/autofocus.directive';
 import { ConfirmClickDirective } from '../../shared/directives/confirm-click.directive';
 import { LowStockDirective } from '../products/directives/low-stock.directive';
+import { ShowPasswordDirective } from '../../shared/directives/show-password.directive';
+import { DigitsOnlyDirective } from '../../shared/directives/digits-only.directive';
+import { TrimDirective } from '../../shared/directives/trim.directive';
+import { CopyDirective } from '../../shared/directives/copy.directive';
+import { ClickOutsideDirective } from '../../shared/directives/click-outside.directive';
+import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
+import { SingleClickDirective } from '../../shared/directives/single-click.directive';
 
 // A directive adds behaviour to an element that already exists.
 // A component = a directive with its own template.
 @Component({
   selector: 'app-directives-demo-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PageHeader, NgClass, NgStyle, AutofocusDirective, ConfirmClickDirective, LowStockDirective],
+  imports: [
+    PageHeader, NgClass, NgStyle, AutofocusDirective, ConfirmClickDirective, LowStockDirective,
+    ShowPasswordDirective, DigitsOnlyDirective, TrimDirective, CopyDirective, ClickOutsideDirective,
+    ImgFallbackDirective, SingleClickDirective,
+  ],
   template: `
     <app-page-header title="Directives" />
 
@@ -50,11 +61,76 @@ import { LowStockDirective } from '../products/directives/low-stock.directive';
     </div>
 
     <div class="card">
+      <h3>5. More small directives (all in shared/directives)</h3>
+      <table class="table">
+        <thead><tr><th>Directive</th><th>Try it</th><th>Real use</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>[appShowPassword]</code></td>
+            <td>
+              <input type="password" value="secret123" [appShowPassword]="showPw()" />
+              <label class="inline"><input type="checkbox" (change)="showPw.set(!showPw())" /> show</label>
+            </td>
+            <td>login page</td>
+          </tr>
+          <tr>
+            <td><code>appDigitsOnly</code></td>
+            <td><input appDigitsOnly placeholder="phone number, try typing letters" /></td>
+            <td>phone, PIN code, quantity</td>
+          </tr>
+          <tr>
+            <td><code>appTrim</code></td>
+            <td>
+              <input appTrim value="   extra spaces   " (blur)="trimmed.set($any($event.target).value)" />
+              <span class="muted">click out, value: "{{ trimmed() }}"</span>
+            </td>
+            <td>login email, any text field</td>
+          </tr>
+          <tr>
+            <td><code>[appCopy]</code></td>
+            <td>
+              <code>ORD-1042</code>
+              <button [appCopy]="'ORD-1042'" (copied)="copied.set($event)">Copy</button>
+              @if (copied()) { <span class="muted">copied {{ copied() }}</span> }
+            </td>
+            <td>order numbers, links, coupon codes</td>
+          </tr>
+          <tr>
+            <td><code>(appClickOutside)</code></td>
+            <td>
+              <span class="menu-wrap" (appClickOutside)="menuOpen.set(false)">
+                <button (click)="menuOpen.set(!menuOpen())">Menu</button>
+                @if (menuOpen()) {
+                  <span class="menu"><span>Profile</span><span>Settings</span><span>Logout</span></span>
+                }
+              </span>
+              <span class="muted">click anywhere else to close</span>
+            </td>
+            <td>dropdowns, popups</td>
+          </tr>
+          <tr>
+            <td><code>appImgFallback</code></td>
+            <td><img src="/images/missing.png" appImgFallback width="80" alt="product" /></td>
+            <td>product pictures, avatars</td>
+          </tr>
+          <tr>
+            <td><code>appSingleClick</code></td>
+            <td>
+              <button appSingleClick (singleClick)="orders.set(orders() + 1)">Place order</button>
+              <span class="muted">double click it: orders placed {{ orders() }}</span>
+            </td>
+            <td>save and pay buttons</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
       <h3>Where does a directive go?</h3>
       <table class="table">
         <thead><tr><th>Directive</th><th>Folder</th><th>Why</th></tr></thead>
         <tbody>
-          <tr><td>appAutofocus, appConfirmClick</td><td><code>shared/directives/</code></td><td>no business rule, any page can use it</td></tr>
+          <tr><td>appAutofocus, appConfirmClick, appTrim, appCopy, ...</td><td><code>shared/directives/</code></td><td>no business rule, any page can use it</td></tr>
           <tr><td>appLowStock</td><td><code>features/products/directives/</code></td><td>knows the products rule for low stock</td></tr>
         </tbody>
       </table>
@@ -65,4 +141,10 @@ export default class DirectivesDemoPage {
   stock = signal(3);
   limit = signal(5);
   deleted = signal(0);
+
+  showPw = signal(false);
+  trimmed = signal('');
+  copied = signal('');
+  menuOpen = signal(false);
+  orders = signal(0);
 }
